@@ -1,0 +1,5 @@
+path: C:\dosyalar_desktop\4. SINIF\Egitim\dataset
+train: images/train
+val: images/val
+names:
+  0: patates_kizartmasi
