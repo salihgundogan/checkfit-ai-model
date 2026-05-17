@@ -9,10 +9,19 @@ IMAGES_DIR = "data/raw/images/"
 LABELS_DIR = "data/intermediate/labels/" # TXT'lerin kaydedileceği yer
 START_FRAME = 3000
 
+# Tüm 10 sınıfımızı tanımladık
 CLASS_MAPPING = {
-    "patates_kizartmasi": 0  
+    "baklava": 0,
+    "hamburger": 1,
+    "kebap": 2,
+    "köfte": 3,
+    "lahmacun": 4,
+    "patates_kizartmasi": 5,
+    "pizza": 6,
+    "sosisli": 7,
+    "sutlac": 8,
+    "waffle": 9
 }
-# --------------------------------------------------------
 
 # Etiketlerin kaydedileceği klasör yoksa otomatik oluştur
 if not os.path.exists(LABELS_DIR):

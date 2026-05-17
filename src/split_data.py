@@ -12,11 +12,15 @@ LBL_DIR = "data/intermediate/labels/"
 BASE_DIR = "data/processed/"
 
 # Şimdilik tek sınıfımız var
-CLASS_NAMES = {0: "patates_kizartmasi"}
+# Yeni YAML için tüm isimler
+CLASS_NAMES = {
+    0: "baklava", 1: "hamburger", 2: "kebap", 3: "köfte", 
+    4: "lahmacun", 5: "patates_kizartmasi", 6: "pizza", 
+    7: "sosisli", 8: "sutlac", 9: "waffle"
+}
 
 # Eğitim yüzdesi
 TRAIN_RATIO = 0.8  # %80 Train, %20 Val
-# --------------------------------------------------------
 
 # 1. YOLO için gerekli klasör yapısını oluştur
 for split in ['train', 'val']:
