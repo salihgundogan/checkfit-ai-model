@@ -2,12 +2,10 @@ import cv2
 from ultralytics import YOLO
 
 # 1. Eğittiğin taze modeli yüklüyoruz
-# (5 epoch eğittiğin için runs/segment/patates_modeli/weights/ klasöründedir)
-model = YOLO('runs/segment/runs/patates_modeli/weights/best.pt')
+model = YOLO('runs/segment/patates_modeli/weights/best.pt')  # Runs klasörüne göre güncel
 
 # 2. Test etmek istediğin bir patates fotoğrafının yolunu yaz
-TEST_IMAGE = "ham_veriler/gorseller/patates_kizartmasi/6000 (28).jpg" # Klasöründeki gerçek bir resim adıyla değiştir!
-# TEST_IMAGE = "kalibrasyon_kagidi2.jpg" # Klasöründeki gerçek bir resim adıyla değiştir!
+TEST_IMAGE = "data/raw/images/6000 (28).jpg"  # Ya da test edeceğin herhangi bir görsel
 
 # 3. Modelden tahmin iste
 results = model.predict(source=TEST_IMAGE, conf=0.25)

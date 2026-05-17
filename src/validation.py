@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Kalibrasyon fotoğrafını yükle
-img = cv2.imread("kalibrasyon_kagidi2.jpg")
+img = cv2.imread("data/calibration/kalibrasyon_kagidi2.jpg")
 # Renk uzayını HSV'ye çevirerek rengi izole et
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 # Örnek renk aralığı (Mavi kağıt için maskeleme)

@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 
 if __name__ == '__main__':
-    model = YOLO('yolo11n-seg.pt') 
+    model = YOLO('models/pretrained/yolo11n-seg.pt') 
 
     results = model.train(
-        data='dataset/data.yaml',
+        data='data/processed/data.yaml',
         epochs=50,              # Gerçek eğitim için epoch sayısını artırdık
         imgsz=640,
         batch=8,

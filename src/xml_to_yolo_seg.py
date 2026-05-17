@@ -4,9 +4,9 @@ import cv2
 
 # --- YENİ KLASÖR YAPISI AYARLARI ---
 # Scriptin ana dizinde olduğunu varsayarak yolları buna göre veriyoruz
-XML_DIR = "ham_veriler/xml_dosyalari/"
-IMAGES_DIR = "ham_veriler/gorseller/patates_kizartmasi/"
-LABELS_DIR = "ham_veriler/labels/patates_kizartmasi/"  # TXT'lerin kaydedileceği yer
+XML_DIR = "data/raw/xml/"
+IMAGES_DIR = "data/raw/images/"
+LABELS_DIR = "data/intermediate/labels/" # TXT'lerin kaydedileceği yer
 START_FRAME = 3000
 
 CLASS_MAPPING = {

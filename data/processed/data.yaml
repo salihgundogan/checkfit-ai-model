@@ -1,4 +1,4 @@
-path: C:\dosyalar_desktop\4. SINIF\Egitim\dataset
+path: C:\dosyalar_desktop\4. SINIF\Egitim\data\processed
 train: images/train
 val: images/val
 names:

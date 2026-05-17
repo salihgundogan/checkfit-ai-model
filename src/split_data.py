@@ -4,12 +4,12 @@ import random
 import yaml
 
 # --- AYARLAR ---
-# Kaynak klasörlerimiz (Bir önceki adımdan gelenler)
-IMG_DIR = "ham_veriler/gorseller/patates_kizartmasi/"
-LBL_DIR = "ham_veriler/labels/patates_kizartmasi/"
+# Kaynak klasörlerimiz
+IMG_DIR = "data/raw/images/"
+LBL_DIR = "data/intermediate/labels/"
 
 # Hedef YOLO eğitim klasörü
-BASE_DIR = "dataset/"
+BASE_DIR = "data/processed/"
 
 # Şimdilik tek sınıfımız var
 CLASS_NAMES = {0: "patates_kizartmasi"}
