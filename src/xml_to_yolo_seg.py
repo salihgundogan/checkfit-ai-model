@@ -23,7 +23,7 @@ CLASS_MAPPING = {
 if not os.path.exists(LABELS_DIR):
     os.makedirs(LABELS_DIR)
 
-# Her bir yemek sınıfı (klasörü) için sırayla işlem yap
+# Her bir  yemek sınıfı (klasörü) için sırayla işlem yap
 for class_name in os.listdir(RAW_IMAGES_DIR):
     img_class_dir = os.path.join(RAW_IMAGES_DIR, class_name)
     xml_class_dir = os.path.join(RAW_XML_DIR, class_name)
