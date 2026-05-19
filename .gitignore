@@ -4,3 +4,9 @@ __pycache__/
 
 # IDE
 .vscode/
+
+# Dataset ve Eğitim Çıktıları
+data/
+runs/
+*.cache
+*.pt
