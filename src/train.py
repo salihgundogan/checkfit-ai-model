@@ -7,8 +7,7 @@ if __name__ == '__main__':
     # 1. Modeli Yükle
     model = YOLO('models/pretrained/yolo11n-seg.pt') 
 
-    # KESİN ÇÖZÜM: Windows ortamında PyTorch hatalarını önlemek için 
-    # tüm işlemler 'if __name__ == '__main__':' bloğunun İÇİNDE (girintili) olmalıdır.
+    # Çalışma dizini ayarlamaları
     project_runs_dir = os.path.join(os.getcwd(), 'runs')
     os.makedirs(project_runs_dir, exist_ok=True)
     
@@ -27,22 +26,22 @@ if __name__ == '__main__':
     # 2. Optimize Edilmiş Eğitimi Başlat
     results = model.train(
         data='data/processed/data.yaml',
-        epochs=2,              # 2 epoch'luk testten ana eğitime geçiş
+        epochs=200,              
         patience=30,             # 30 epoch boyunca mAP artmazsa eğitimi otomatik durdur
         imgsz=640,
         batch=16,
         project=project_runs_dir,          
         name=run_name,        
         exist_ok=False,       
-        device='0',              # RTX 3050 GPU'yu aktif eder
-        workers=0,               # Windows 11'de çoklu işlem (multiprocessing) çökmesini engeller
+        device='0',              # RTX 3050 GPU'yu kullan
+        workers=0,               # Windows kilitlenmelerini önle
         
-        # --- CHECKFIT-AI MODEL OPTİMİZASYONLARI ---
-        image_weights=True,      # Çok önemli: Veri setinde az bulunan Hamburger, Sosisli, Waffle gibi sınıflara ağırlık verir
-        degrees=10.0,            # Görselleri rastgele +/- 10 derece döndürerek farklı tabak açılarını öğretir
-        hsv_s=0.4,               # Renk doygunluğunu değiştirerek farklı ortam ışıklarını simüle eder
-        hsv_v=0.4,               # Parlaklık değişimi ile gölgeli fotoğraflara karşı direnci artırır
-        mosaic=1.0               # Mozaikleme (farklı yemekleri tek karede birleştirme) yöntemini %100 uygular
+        # --- VERİ ARTIRIMI (AUGMENTATION) PARAMETRELERİ ---
+        # image_weights kaldırıldı, onun yerine aşağıdaki artırımlar modeli besleyecek:
+        degrees=10.0,            # Görselleri rastgele +/- 10 derece döndür
+        hsv_s=0.4,               # Renk doygunluğunu değiştir
+        hsv_v=0.4,               # Parlaklık değişimi uygula
+        mosaic=1.0               # Mozaikleme ile 4 farklı fotoğrafı tek karede birleştir
     )
 
     print(f"\n✅ Eğitim tamamlandı! Sonuçlar proje dizinindeki 'runs/{run_name}' klasörüne kaydedildi.")
