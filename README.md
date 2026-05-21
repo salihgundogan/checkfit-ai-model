@@ -1,26 +1,29 @@
-# 🥔 NutriSense: YOLOv11-Segmentation ile Yemek Alanı Hesaplama Pipeline'ı
+# NutriSense: YOLOv11-Segmentation Tabanlı Görüntü İşleme ve Alan Hesaplama Boru Hattı
 
-Bu proje; görüntüler üzerinden yapay zeka (**YOLOv11-segmentation**) kullanarak yemekleri (özellikle patates kızartmalarını) segmentlere ayırır, piksel bazlı alanlarını hesaplar ve referans bir mavi kalibrasyon nesnesi yardımıyla bu alanları hassas bir şekilde gerçek **cm²** değerlerine dönüştürür.
+Bu proje, bilgisayarlı görü ve derin öğrenme (YOLOv11-segmentation) tekniklerini kullanarak gıda nesnelerinin (örneğin patates kızartması) otonom olarak segmentasyonunu gerçekleştirir, pikseller üzerinden alan hesaplaması yapar ve referans bir kalibrasyon nesnesi aracılığıyla bu değerleri metrik (cm²) ölçülere dönüştürür.
 
-Akademik ve endüstriyel standartlara (**MLOps**) uygun, temiz, modüler ve yüksek performanslı bir yapay zeka boru hattı (pipeline) olarak tasarlanmıştır.
-
----
-
-## 🍽️ Desteklenen Yemek Sınıfları (10 Sınıf)
-Sistemimiz, CVAT üzerinde etiketlenmiş ve YOLOv11 modeliyle eğitilmeye hazır olan aşağıdaki 10 farklı yemek sınıfını desteklemektedir:
-
-| ID | Yemek Sınıfı | İkon | ID | Yemek Sınıfı | İkon |
-|:--:|:--|:--:|:--:|:--|:--:|
-| **0** | Baklava | 🥐 | **5** | Patates Kızartması | 🍟 |
-| **1** | Hamburger | 🍔 | **6** | Pizza | 🍕 |
-| **2** | Kebap | 🥙 | **7** | Sosisli | 🌭 |
-| **3** | Köfte | 🥩 | **8** | Sütlaç | 🥣 |
-| **4** | Lahmacun | 🌯 | **9** | Waffle | 🧇 |
+Sistem; akademik araştırmalara ve endüstriyel MLOps (Makine Öğrenimi Operasyonları) standartlarına uygun, modüler, ölçeklenebilir ve yüksek performanslı bir mimari temel alınarak geliştirilmiştir.
 
 ---
 
-## 🏗️ Proje Klasör Yapısı
-Proje dosyaları, veri setleri, modeller ve kodlar tamamen birbirinden ayrıştırılarak MLOps prensiplerine uygun şekilde organize edilmiştir:
+## Desteklenen Sınıflar
+Model, veri seti (CVAT üzerinden etiketlenmiş) kapsamında 10 farklı sınıfı tespit ve segmente edebilmektedir:
+
+- Baklava
+- Hamburger
+- Kebap
+- Köfte
+- Lahmacun
+- Patates Kızartması
+- Pizza
+- Sosisli
+- Sütlaç
+- Waffle
+
+---
+
+## Proje Mimarisi ve Klasör Yapısı
+Proje bileşenleri, veri seti yönetimini ve model eğitimini birbirinden izole edecek şekilde yapılandırılmıştır:
 
 ```text
 Egitim/
@@ -49,7 +52,7 @@ Egitim/
 │   │   ├── labels/            # train ve val klasörleri
 │   │   └── data.yaml          # YOLOv11 Veri Konfigürasyon Dosyası
 │   │
-│   └── calibration/           # Kalibrasyon Görselleri (Örn: Mavi kağıt)
+│   └── calibration/           # Kalibrasyon Görselleri
 │
 ├── models/                    # Model Ağırlıkları (.pt dosyaları - Git dışı tutulur)
 │   ├── pretrained/            # Hazır YOLO modelleri (yolo11n-seg.pt vb.)
@@ -60,43 +63,42 @@ Egitim/
 
 ---
 
-## 🚀 Proje Çalıştırma Adımları (Pipeline)
+## Kurulum ve Çalıştırma Adımları
 
-Tüm işlemleri sırasıyla terminalde **proje kök dizinindeyken (`Egitim/` klasöründeyken)** çalıştırınız.
+Tüm komut dosyaları proje kök dizininde (`Egitim/` klasöründe) çalıştırılmalıdır.
 
-### 1️⃣ XML Etiketlerini YOLO Formatına Dönüştürme
-CVAT çokgen (polygon) etiketlerini YOLO segmentasyon standardı olan normalize edilmiş `TXT` dosyalarına dönüştürür ve `data/intermediate/labels/` klasörüne kaydeder:
+### 1. Etiket Dönüştürme (XML to YOLO)
+CVAT üzerinden elde edilen çokgen (polygon) etiketlerini, YOLO formatına uygun normalize edilmiş `TXT` dosyalarına dönüştürür.
 ```bash
 python src/xml_to_yolo_seg.py
 ```
 
-### 2️⃣ Veri Setini Train / Val Olarak Bölme
-Resimleri ve oluşturulan TXT etiketlerini eşleştirerek rastgele karıştırır, `%80 Eğitim` ve `%20 Doğrulama` olarak böler. Ardından YOLO formatına uygun olarak `data/processed/` altına dağıtır ve otomatik olarak `data.yaml` dosyasını oluşturur:
+### 2. Veri Seti Bölümlendirme (Train / Val Split)
+Görüntüleri ve karşılık gelen TXT etiketlerini %80 Eğitim (Train) ve %20 Doğrulama (Validation) kümelerine ayırır. Eğitim konfigürasyon dosyası (`data.yaml`) otomatik olarak oluşturulur.
 ```bash
 python src/split_data.py
 ```
 
-### 3️⃣ YOLOv11 Segmentasyon Modelini Eğitme
-Oluşturulan veri seti konfigürasyonunu (`data.yaml`) referans alarak YOLOv11 modelini eğitir. Eğitim sonuçları çakışmayı önlemek için otomatik olarak artan numaralarla (`runs/checkfit-ai1`, `runs/checkfit-ai2` vb.) kaydedilir:
+### 3. Model Eğitimi
+Veri seti konfigürasyonu (`data.yaml`) kullanılarak YOLOv11 segmentasyon modeli eğitilir. Eğitim çıktıları `runs/` dizininde versiyonlanarak saklanır.
 ```bash
 python src/train.py
 ```
 
-### 4️⃣ Sistem Kalibrasyonu (Piksel -> cm²)
-Kameranın gerçek tabak/yemek alanını doğru hesaplayabilmesi için referans bir mavi nesne (`data/calibration/kalibrasyon_kagidi2.jpg`) üzerinden HSV maskeleme uygulayarak piksel-cm² katsayısını hesaplar:
+### 4. Sistem Kalibrasyonu
+Kamera perspektifinden kaynaklanan alan değişimlerini hesaplayabilmek için referans bir nesne (örneğin mavi bir kalibrasyon kâğıdı) üzerinden piksel-cm² oranını (katsayıyı) hesaplar.
 ```bash
 python src/validation.py
 ```
 
-### 5️⃣ Yemek Alanını ve Gerçek Boyutunu Hesaplama
-Eğitilen en iyi modeli yükler, test görselindeki nesneleri segmentlere ayırır, toplam piksel alanını hesaplar ve kalibrasyon katsayısına bölerek **gerçek cm² boyutunu** çıktı olarak verir:
+### 5. Alan Hesaplama ve Tahmin
+Eğitilmiş model test görüntüsü üzerinde çalıştırılarak nesne segmentasyonlarını gerçekleştirir. Elde edilen toplam piksel alanı, kalibrasyon katsayısı kullanılarak metrik cm² değerine dönüştürülür.
 ```bash
 python src/predict_and_calculate.py
 ```
 
 ---
 
-## 🎯 Profesyonel MLOps Yaklaşımları
-* **Taşınabilirlik:** Kodlardaki tüm dosya yolları göreceli (`relative path`) olarak projenin ana dizinine göre ayarlanmıştır. Başka bilgisayarlarda doğrudan çalışır.
-* **Hafif Git Yapısı:** Büyük veri setleri (`data/`), model ağırlıkları (`models/` ve `*.pt`) ile eğitim çıktıları (`runs/`) `.gitignore` ile filtrelenerek Git deposuna yüklenmesi engellenmiştir. Bu sayede kod tabanı her zaman hafif ve hızlı kalır.
-
+## MLOps ve Geliştirici Standartları
+- **Bağımsız Çalışma Ortamı (Portability):** Kod yapısındaki dizin yolları tamamen göreceli (relative path) olarak tasarlanmıştır. Bu sayede proje, ortam bağımsız olarak çalıştırılabilir.
+- **Optimizasyon ve Sürüm Kontrolü:** Model ağırlıkları (`.pt`), eğitim çıktıları (`runs/`) ve hacimli veri setleri (`data/`) Git takibinden dışlanarak (`.gitignore` aracılığıyla) deponun hafif ve yönetilebilir kalması sağlanmıştır.
