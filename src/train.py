@@ -25,9 +25,9 @@ if __name__ == '__main__':
     
     results = model.train(
         data='data/processed/data.yaml',
-        epochs=2,              # Deneme için 2 epoch
+        epochs=200,              
         imgsz=640,
-        batch=8,
+        batch=16,
         project=project_runs_dir,          # Çıktıları bu klasöre kaydeder
         name=run_name,        # Sonuçlar dinamik isme (checkfit-ai1, checkfit-ai2 vb.) kaydedilir
         exist_ok=False,       # Klasörün üzerine yazmasını engeller
